@@ -1,10 +1,3 @@
-FROM openjdk:8u212-jdk-alpine
-COPY target/*SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT ["java","-Xmx400M","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar","--spring.profiles.active=docker"]
-
 FROM gitpod/workspace-full
 
 # Helm 설치
@@ -20,8 +13,8 @@ RUN sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certif
 # Azure CLI 설치
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-# Java, Maven, Docker 등 추가 설치
-RUN sudo apt-get install -y openjdk-17-jdk maven docker.io
+# Java & Maven
+RUN sudo apt-get install -y openjdk-17-jdk maven
 
 COPY init.sh /init.sh
 RUN chmod +x /init.sh
