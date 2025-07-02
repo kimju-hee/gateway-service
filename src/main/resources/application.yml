@@ -66,7 +66,7 @@ spring:
           predicates:
             - Path=/manuscripts/**, 
         - id: point
-          uri: http://point:8080
+          uri: http://point-service:8080 # <-- 'point'를 'point-service'로 변경
           predicates:
             - Path=/points/**, 
         - id: subscriber

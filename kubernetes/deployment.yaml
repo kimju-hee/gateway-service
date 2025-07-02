@@ -16,6 +16,22 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: username/gateway:latest
+          image: project20registry.azurecr.io/gateway:v2
           ports:
             - containerPort: 8080
+          readinessProbe: # <-- 이 부분부터 추가
+            httpGet:
+              path: '/actuator/health' # gateway 서비스의 헬스 체크 엔드포인트
+              port: 8080
+            initialDelaySeconds: 10 # 파드 시작 후 10초 대기
+            timeoutSeconds: 2     # 응답 대기 시간 2초
+            periodSeconds: 5      # 5초마다 체크
+            failureThreshold: 10  # 10번 실패 시 준비 안 됨으로 판단
+          livenessProbe: # <-- 이 부분도 추가
+            httpGet:
+              path: '/actuator/health' # gateway 서비스의 헬스 체크 엔드포인트
+              port: 8080
+            initialDelaySeconds: 120 # 파드 시작 후 120초 대기 
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
