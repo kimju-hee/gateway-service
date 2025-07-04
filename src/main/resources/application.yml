@@ -1,27 +1,24 @@
 server:
   port: 8088
-
 ---
-
 spring:
   profiles: default
   cloud:
     gateway:
-#<<< API Gateway / Routes
       routes:
         - id: author
           uri: http://localhost:8082
           predicates:
-            - Path=/authors/**, 
+            - Path=/authors/**,
         - id: writing
           uri: http://localhost:8083
           predicates:
-            - Path=/manuscripts/**, 
+            - Path=/manuscripts/**,
         - id: point
-          uri: http://point-service:80
+          uri: http://localhost:8084
           predicates:
             - Path=/points/**, /getPoints/**
-        - id: subscriber
+        - id: subscription
           uri: http://localhost:8085
           predicates:
             - Path=/users/**, /subscriptions/**, /getSubscriptions/**
@@ -30,17 +27,17 @@ spring:
           predicates:
             - Path=/books/**, /getBookByIds/**
         - id: aigeneration
-          uri: http://localhost:8087
+          uri: http://localhost:8081
           predicates:
             - Path=/aiBookGenerations/**, /processedResults/**
         - id: frontend
           uri: http://localhost:8080
           predicates:
             - Path=/**
-#>>> API Gateway / Routes
+
       globalcors:
         corsConfigurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins:
               - "*"
             allowedMethods:
@@ -48,46 +45,44 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
-
 ---
-
 spring:
   profiles: docker
   cloud:
     gateway:
       routes:
         - id: author
-          uri: http://author:8080
+          uri: http://author:8082
           predicates:
-            - Path=/authors/**, 
+            - Path=/authors/**,
         - id: writing
-          uri: http://writing:8080
+          uri: http://writing:8083
           predicates:
-            - Path=/manuscripts/**, 
+            - Path=/manuscripts/**,
         - id: point
-          uri: http://point-service:80 # <-- 'point'를 'point-service'로 변경
+          uri: http://point:8084
           predicates:
-            - Path=/points/**, 
-        - id: subscriber
-          uri: http://subscriber:8080
+            - Path=/points/**, /getPoints/**
+        - id: subscription
+          uri: http://subscription:8085
           predicates:
-            - Path=/users/**, /subscriptions/**, 
+            - Path=/users/**, /subscriptions/**, /getSubscriptions/**
         - id: platform
-          uri: http://platform:8080
+          uri: http://platform:8086
           predicates:
-            - Path=/books/**, 
+            - Path=/books/**, /getBookByIds/**
         - id: aigeneration
-          uri: http://aigeneration:8080
+          uri: http://aigeneration:8081
           predicates:
-            - Path=/aiBookGenerations/**, 
+            - Path=/aiBookGenerations/**, /processedResults/**
         - id: frontend
           uri: http://frontend:8080
           predicates:
             - Path=/**
+
       globalcors:
         corsConfigurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins:
               - "*"
             allowedMethods:
@@ -95,6 +90,3 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
-server:
-  port: 8080
